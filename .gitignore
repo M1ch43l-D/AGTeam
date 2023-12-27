@@ -1,0 +1,7 @@
+.env
+.json
+OAI_CONFIG_LIST
+venv
+.cache
+.vscode
+compose-dev.yaml
