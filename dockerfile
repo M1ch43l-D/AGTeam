@@ -1,5 +1,5 @@
 # Basic setup
-FROM python:3.10
+FROM python:3.9
 
 # Update system packages
 RUN apt-get update && apt-get install -y \
