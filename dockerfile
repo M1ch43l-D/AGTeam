@@ -3,6 +3,15 @@ FROM python:3.10
 RUN apt-get update && apt-get -y update
 RUN apt-get install -y sudo git npm
 
+# Arguments that can be passed at build time
+ARG GIT_USERNAME
+ARG GIT_EMAIL
+
+# Set Git configuration
+RUN git config --global user.name "${GIT_USERNAME}"
+RUN git config --global user.email "${GIT_EMAIL}"
+
+
 # Setup user to not run as root
 RUN adduser --disabled-password --gecos '' autogen-dev
 RUN adduser autogen-dev sudo
@@ -24,6 +33,8 @@ RUN sudo npm install --global yarn
 RUN sudo pip install pydoc-markdown
 RUN cd website
 RUN yarn install --frozen-lockfile --ignore-engines
+
+
 
 # override default image starting point
 CMD /bin/bash
