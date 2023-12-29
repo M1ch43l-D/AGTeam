@@ -9,7 +9,7 @@ assert os.environ.get("OPENAI_API_KEY")
 config_list_gpt4 = autogen.config_list_from_json(
     "OAI_CONFIG_LIST",
     filter_dict={
-        "model": ["gpt-4", "gpt-4-1106-preview", "gpt-4-32k-v0314"],
+        "model": ["gpt-3.5-turbo", "gpt-4-1106-preview", "gpt-4-32k-v0314"],
     },
 )
 gpt4_config = {

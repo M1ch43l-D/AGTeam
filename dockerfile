@@ -1,41 +1,41 @@
-# basic setup
+# Basic setup
 FROM python:3.10
-RUN apt-get update && apt-get -y update
-RUN apt-get install -y sudo git npm
 
-# Arguments that can be passed at build time
-ARG GIT_USERNAME
-ARG GIT_EMAIL
-
-# Set Git configuration
-RUN git config --global user.name "${GIT_USERNAME}"
-RUN git config --global user.email "${GIT_EMAIL}"
-
+# Update system packages
+RUN apt-get update && apt-get install -y \
+    sudo \
+    git \
+    npm \
+    && rm -rf /var/lib/apt/lists/*
 
 # Setup user to not run as root
 RUN adduser --disabled-password --gecos '' autogen-dev
 RUN adduser autogen-dev sudo
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 USER autogen-dev
+WORKDIR /home/autogen-dev
 
-# Pull repo
-RUN cd /home/autogen-dev && git clone https://github.com/microsoft/autogen.git
+# Clone repo
+RUN git clone https://github.com/microsoft/autogen.git
 WORKDIR /home/autogen-dev/autogen
 
-# Install autogen (Note: extra components can be installed if needed)
-RUN sudo pip install -e .[test]
+# Install Python packages
+# Add your requirements.txt file to the same directory as Dockerfile
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Install autogen from GitHub
+RUN pip install git+https://github.com/microsoft/autogen.git
 
 # Install precommit hooks
 RUN pre-commit install
 
 # For docs
 RUN sudo npm install --global yarn
-RUN sudo pip install pydoc-markdown
-RUN cd website
+RUN pip install pydoc-markdown
+WORKDIR /home/autogen-dev/autogen/website
 RUN yarn install --frozen-lockfile --ignore-engines
 
-
-
-# override default image starting point
-CMD /bin/bash
+# Override default image starting point
+CMD ["/bin/bash"]
 ENTRYPOINT []
